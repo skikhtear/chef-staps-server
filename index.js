@@ -31,6 +31,29 @@ function verifyJWT(req, res, next){
     })
 }
 
+async function run() {
+    try {
+        const serviceCollection = client.db('chef-steps').collection('services')
+        const reviewCollection = client.db('chef-steps').collection('reviews');
+        
+       
+
+
+        
+    }
+    finally {
+
+    }
+}
+run().catch(err => console.error(err));
+
+
+app.get('/', (req, res) => {
+    res.send('Chef Steps server is running')
+})
+app.listen(port, () => {
+    console.log(`Chef Steps server running on ${port}`);
+})
 
 
 
