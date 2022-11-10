@@ -56,6 +56,12 @@ async function run() {
             res.send(services);
         });
 
+        app.post('/addservices', async (req, res) => {
+            const service = req.body;
+            const result = await serviceCollection.insertOne(service);
+            res.send(result);
+        });
+
         app.get('/services/:id',async(req,res)=>{
             const id = req.params.id;
             const query = {_id: ObjectId(id)};
@@ -71,8 +77,8 @@ async function run() {
         });
 
         app.get('/reviews', async (req, res) => {
-            const decoded = req.decoded;
-            console.log('inside review api', decoded);
+            // const decoded = req.decoded;
+            // console.log('inside review api', decoded);
 
 
             let query = {};
@@ -88,24 +94,19 @@ async function run() {
             res.send(review);
         });
 
+        app.get('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const user = await reviewCollection.findOne(query);
+            res.send(user);
+        })
+
         app.post('/reviews', async (req, res) => {
             const review = req.body;
             const result = await reviewCollection.insertOne(review);
             res.send(result);
         });
 
-        app.patch('/reviews/:id', async (req, res) => {
-            const id = req.params.id;
-            const status = req.body.status
-            const query = { _id: ObjectId(id) }
-            const updatedDoc = {
-                $set:{
-                    status: status
-                }
-            }
-            const result = await reviewCollection.updateOne(query, updatedDoc);
-            res.send(result);
-        });
 
         app.delete('/reviews/:id', async (req, res) => {
             const id = req.params.id;
@@ -114,7 +115,21 @@ async function run() {
             res.send(result);
         });
 
-        
+        app.put('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const review = req.body;
+            const option = {upsert: true};
+            const updatedReview = {
+                $set: {
+                    customer: review.customer,
+                    message: review.message,
+                    email: review.email
+                }
+            }
+            const result = await reviewCollection.updateOne(filter, updatedReview, option);
+            res.send(result);
+        })
     }
     finally {
 
